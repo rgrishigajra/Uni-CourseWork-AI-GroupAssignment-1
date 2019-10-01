@@ -31,28 +31,19 @@ def printable_board(row):
 # return a list of possible successor states
 def successors(state):
     (empty_row, empty_col) = ind2rowcol(state.index(0))
-    r=[ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
+    return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
              for (c, (i, j)) in MOVES.items() if valid_index(empty_row+i, empty_col+j) ]
-    return r
+
 
 # check if we've reached the goal
 def is_goal(state):
     return sorted(state[:-1]) == list(state[:-1]) and state[-1]==0
 
-"""def heuristic_a(state):
+def heuristic_a(state):
     c=0
     for i in range(0,len(state)):
         if state[i]!=i+1 and state[i]!=0 :
             c=c+1
-    return c
-"""
-def heuristic_a(state):
-    c=0
-    for i in range(0,16):
-       if state[i]!=0:
-            (x1,y1)=ind2rowcol(state[i]-1)
-            (x2,y2)=ind2rowcol(i)
-            c=c+(abs(x2-x1)+abs(y2-y1))
     return c
 
 
@@ -66,23 +57,20 @@ def solve(initial_board):
     hlist=[h_a]
 
     while len(fringe) > 0:
-        (state, route_so_far)= fringe.pop()
+        (state, route_so_far)= fringe.pop(hlist.index(min(hlist)))
         hlist.pop(hlist.index(min(hlist)))
+        print(state,route_so_far)
         if state in visited:
             continue
         visited.append(state)
+        count = count + 1
+        if is_goal(state):
+            print(count)
+            return (route_so_far)
         for (succ, move) in successors( state ):
-            if is_goal(state):
-                count = count + 1
-                print(count)
-                return (route_so_far + move)
-            count =count+1
             h_a = heuristic_a(succ)
             fringe.insert(0, (succ, route_so_far + move ))
             hlist.insert(0,h_a+len(route_so_far)+1)
-
-
-
     return False
 
 # test cases
