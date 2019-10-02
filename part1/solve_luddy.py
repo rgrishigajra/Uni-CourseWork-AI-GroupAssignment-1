@@ -9,8 +9,18 @@ from queue import PriorityQueue
 import sys
 
 MOVES = { "R": (0, -1), "L": (0, 1), "D": (-1, 0), "U": (1,0) }
+MOVES_luddy = { "A": (2, 1),"B": (2, -1),"C": (-2, 1),"D": (-2, -1),"E": (1, 2),"G": (-1, 2),"F": (1, -2),"H": (-1, -2)}
+
 
 def rowcol2ind(row, col):
+    if(row==-1):
+        row=3
+    if (row == 4):
+        row = 0
+    if (col == -1):
+        col = 3
+    if (col == 4):
+        col = 0
     return row*4 + col
 
 def ind2rowcol(ind):
@@ -31,10 +41,15 @@ def printable_board(row):
 # return a list of possible successor states
 def successors(state):
     (empty_row, empty_col) = ind2rowcol(state.index(0))
-    return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
-             for (c, (i, j)) in MOVES.items() if valid_index(empty_row+i, empty_col+j) ]
-
-
+    if(sys.argv[2]=="Original" or sys.argv[2]=="original"):
+        return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
+                 for (c, (i, j)) in MOVES.items() if valid_index(empty_row+i, empty_col+j) ]
+    elif(sys.argv[2]=="Luddy" or sys.argv[2]=="luddy"):
+        return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
+                 for (c, (i, j)) in MOVES_luddy.items() if valid_index(empty_row+i, empty_col+j) ]
+    elif(sys.argv[2] == "Circular" or sys.argv[2]=="circular"):
+        return [(swap_tiles(state, empty_row, empty_col, empty_row + i, empty_col + j), c) \
+                for (c, (i, j)) in MOVES.items()]
 # check if we've reached the goal
 def is_goal(state):
     return sorted(state[:-1]) == list(state[:-1]) and state[-1]==0
@@ -100,7 +115,7 @@ if __name__ == "__main__":
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
     print("Solving...")
     N= valid_board(tuple(start_state))
-    if(N % 2==0):
+    if(N % 2==0 and sys.argv[2]=="original"):
         route = solve(tuple(start_state))
         print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
     else:
