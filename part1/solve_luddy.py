@@ -140,6 +140,7 @@ if __name__ == "__main__":
         route = solve_circular(start_state)
 
     if (route):
+
         print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
     else:
         print('Inf')
