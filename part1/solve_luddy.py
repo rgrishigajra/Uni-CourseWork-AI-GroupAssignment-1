@@ -9,8 +9,18 @@ from queue import PriorityQueue
 import sys
 
 MOVES = { "R": (0, -1), "L": (0, 1), "D": (-1, 0), "U": (1,0) }
+MOVES_luddy = { "A": (2, 1),"B": (2, -1),"C": (-2, 1),"D": (-2, -1),"E": (1, 2),"G": (-1, 2),"F": (1, -2),"H": (-1, -2)}
+
 
 def rowcol2ind(row, col):
+    if(row==-1):
+        row=3
+    if (row == 4):
+        row = 0
+    if (col == -1):
+        col = 3
+    if (col == 4):
+        col = 0
     return row*4 + col
 
 def ind2rowcol(ind):
@@ -31,10 +41,15 @@ def printable_board(row):
 # return a list of possible successor states
 def successors(state):
     (empty_row, empty_col) = ind2rowcol(state.index(0))
-    return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
-             for (c, (i, j)) in MOVES.items() if valid_index(empty_row+i, empty_col+j) ]
-
-
+    if(sys.argv[2]=="Original" or sys.argv[2]=="original"):
+        return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
+                 for (c, (i, j)) in MOVES.items() if valid_index(empty_row+i, empty_col+j) ]
+    elif(sys.argv[2]=="Luddy" or sys.argv[2]=="luddy"):
+        return [ (swap_tiles(state, empty_row, empty_col, empty_row+i, empty_col+j), c) \
+                 for (c, (i, j)) in MOVES_luddy.items() if valid_index(empty_row+i, empty_col+j) ]
+    elif(sys.argv[2] == "Circular" or sys.argv[2]=="circular"):
+        return [(swap_tiles(state, empty_row, empty_col, empty_row + i, empty_col + j), c) \
+                for (c, (i, j)) in MOVES.items()]
 # check if we've reached the goal
 def is_goal(state):
     return sorted(state[:-1]) == list(state[:-1]) and state[-1]==0
@@ -68,10 +83,12 @@ def solve(initial_board):
             print(count)
             return (route_so_far)
         for (succ, move) in successors( state ):
+
             h_a = heuristic_a(succ)
             fringe.insert(0, (succ, route_so_far + move ))
             hlist.insert(0,h_a+len(route_so_far)+1)
     return False
+
 def valid_board(start_state):
     c=0
     for i in range(0,16):
@@ -80,8 +97,23 @@ def valid_board(start_state):
                 c=c+1
     (row, col) = ind2rowcol(start_state.index(0))
     c=c+row+1
-    return c
+    return c%2==0
 
+def solve_original(start_state):
+    route=""
+    if(valid_board(start_state)):
+        route = solve(tuple(start_state))
+    return route
+
+def solve_circular(start_state):
+
+    route = solve(tuple(start_state))
+    return route
+
+def solve_luddy(start_state):
+
+    route = solve(tuple(start_state))
+    return route
 
 
 # test cases
@@ -99,9 +131,15 @@ if __name__ == "__main__":
 
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
     print("Solving...")
-    N= valid_board(tuple(start_state))
-    if(N % 2==0):
-        route = solve(tuple(start_state))
+
+    if(sys.argv[2]=="Original"):
+        route=solve_original(start_state)
+    if (sys.argv[2] == "Luddy"):
+        route = solve_luddy(start_state)
+    if (sys.argv[2] == "Circular"):
+        route = solve_circular(start_state)
+
+    if (route):
         print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
     else:
         print('Inf')
