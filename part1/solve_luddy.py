@@ -72,6 +72,17 @@ def solve(initial_board):
             fringe.insert(0, (succ, route_so_far + move ))
             hlist.insert(0,h_a+len(route_so_far)+1)
     return False
+def valid_board(start_state):
+    c=0
+    for i in range(0,16):
+        for j in range(i,16):
+            if start_state[j]<start_state[i] and start_state[i]!=0 and start_state[j]!=0:
+                c=c+1
+    (row, col) = ind2rowcol(start_state.index(0))
+    c=c+row+1
+    return c
+
+
 
 # test cases
 if __name__ == "__main__":
@@ -83,17 +94,15 @@ if __name__ == "__main__":
         for line in file:
             start_state += [ int(i) for i in line.split() ]
 
-    if(sys.argv[2] != "original"):
-        raise(Exception("Error: only 'original' puzzle currently supported -- you need to implement the other two!"))
-
     if len(start_state) != 16:
         raise(Exception("Error: couldn't parse start state file"))
 
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
-
     print("Solving...")
-
-    route = solve(tuple(start_state))
-    
-    print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
+    N= valid_board(tuple(start_state))
+    if(N % 2==0):
+        route = solve(tuple(start_state))
+        print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
+    else:
+        print('Inf')
 
