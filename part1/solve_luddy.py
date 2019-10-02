@@ -131,6 +131,7 @@ if __name__ == "__main__":
 
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
     print("Solving...")
+<<<<<<< HEAD
 
     if(sys.argv[2]=="Original"):
         route=solve_original(start_state)
@@ -140,6 +141,11 @@ if __name__ == "__main__":
         route = solve_circular(start_state)
 
     if (route):
+=======
+    N= valid_board(tuple(start_state))
+    if(N % 2==0 and sys.argv[2]=="original"):
+        route = solve(tuple(start_state))
+>>>>>>> ab9df508e8bc1b1b0cd85ce27fe38748847c025e
         print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
     else:
         print('Inf')
