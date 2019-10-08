@@ -54,7 +54,18 @@ def successors(state):
 def is_goal(state):
     return sorted(state[:-1]) == list(state[:-1]) and state[-1]==0
 
-def heuristic_a(state):
+def heuristic_o(state):
+    c=0
+    for i in range(0,15):
+        (x1,y1)=ind2rowcol(state.index(i+1))
+        (x2,y2)=ind2rowcol(i)
+        c+= abs(x1-x2)+abs(y2-y1)
+        """if state[i]!=i+1 and state[i]!=0 :
+            c=c+1"""
+    return c
+
+
+def heuristic_c(state):
     c=0
     for i in range(0,len(state)):
         if state[i]!=i+1 and state[i]!=0 :
@@ -62,29 +73,47 @@ def heuristic_a(state):
     return c
 
 
+def solve_l(initial_board):
+    count = 0
+    h_a = heuristic_c(initial_board)
+    fringe = [(initial_board, "")]
+    visited = []
+    hlist=[h_a]
+    while len(fringe) > 0:
+        (state, route_so_far) = fringe.pop(hlist.index(min(hlist)))
+        hlist.pop(hlist.index(min(hlist)))
+        if state in visited:
+            continue
+        visited.append(state)
+        if is_goal(state):
+            print(count)
+            return (route_so_far)
+        count = count + 1
+        for (succ, move) in successors(state):
+            h_a = heuristic_c(succ)
+            fringe.insert(0, (succ, route_so_far + move))
+            hlist.insert(0,h_a+len(route_so_far)+1)
+    return False
 
 # The solver! - using BFS right nowol,m
 def solve(initial_board):
     count=0
-    h_a=heuristic_a(initial_board)
+    h_a=heuristic_o(initial_board)
     fringe = [ (initial_board, "" ) ]
     visited=[]
     hlist=[h_a]
-
     while len(fringe) > 0:
         (state, route_so_far)= fringe.pop(hlist.index(min(hlist)))
         hlist.pop(hlist.index(min(hlist)))
-        print(state,route_so_far)
         if state in visited:
             continue
         visited.append(state)
-        count = count + 1
         if is_goal(state):
             print(count)
             return (route_so_far)
+        count = count + 1
         for (succ, move) in successors( state ):
-
-            h_a = heuristic_a(succ)
+            h_a = heuristic_o(succ)
             fringe.insert(0, (succ, route_so_far + move ))
             hlist.insert(0,h_a+len(route_so_far)+1)
     return False
@@ -107,46 +136,43 @@ def solve_original(start_state):
 
 def solve_circular(start_state):
 
-    route = solve(tuple(start_state))
+    route = solve_l(tuple(start_state))
     return route
 
 def solve_luddy(start_state):
 
-    route = solve(tuple(start_state))
+    route = solve_l(tuple(start_state))
     return route
-
 
 # test cases
 if __name__ == "__main__":
     if(len(sys.argv) != 3):
         raise(Exception("Error: expected 2 arguments"))
-
     start_state = []
     with open(sys.argv[1], 'r') as file:
         for line in file:
             start_state += [ int(i) for i in line.split() ]
-
     if len(start_state) != 16:
         raise(Exception("Error: couldn't parse start state file"))
-
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
     print("Solving...")
-<<<<<<< HEAD
 
     if(sys.argv[2]=="Original"):
         route=solve_original(start_state)
-    if (sys.argv[2] == "Luddy"):
+        if (route):
+            print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
+        else:
+            print('Inf')
+    elif (sys.argv[2] == "Luddy"):
         route = solve_luddy(start_state)
-    if (sys.argv[2] == "Circular"):
+        if (route):
+            print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
+        else:
+            print('Inf')
+    elif (sys.argv[2] == "Circular"):
         route = solve_circular(start_state)
-
-    if (route):
-=======
-    N= valid_board(tuple(start_state))
-    if(N % 2==0 and sys.argv[2]=="original"):
-        route = solve(tuple(start_state))
->>>>>>> ab9df508e8bc1b1b0cd85ce27fe38748847c025e
-        print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
-    else:
-        print('Inf')
+        if (route):
+            print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
+        else:
+            print('Inf')
 
