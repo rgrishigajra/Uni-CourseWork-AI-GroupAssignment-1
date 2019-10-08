@@ -13,7 +13,7 @@ def load_people(filename):
     with open(filename, "r") as file:
         for line in file:
             l = line.split()
-            people[l[0]] = [ float(i) for i in l[1:] ] 
+            people[l[0]] = [ float(i) for i in l[1:] ]
     return people
 
 
@@ -22,31 +22,77 @@ def load_people(filename):
 #  until the budget is exhausted. It exactly exhausts the budget
 #  by adding a fraction of the last person.
 #
-def approx_solve(people, budget):
+def succ(people,person,budget):
+    # print('name:',name)
+    cost=0
+    for i in person:
+        cost=cost+(people.get(i)[1])
+    balance=budget-cost
 
-    solution=()
-    for (person, (skill, cost)) in sorted(people.items(), key=lambda x: x[1][0]/x[1][1]):
-        if budget - cost > 0:
-            solution += ( ( person, 1), )
-            budget -= cost
-        else:
-            return solution + ( ( person, budget/cost ), )
+    r=person
+    s=[]
+    for (person_next, (skill_next, cost_next)) in people.items():
+        b = balance
+        if (b-cost_next>0) and person_next not in person:
+            b=b-cost_next
+            s+=[r+ [person_next,],]
+    return s
 
-    return solution
 
 
-if __name__ == "__main__":
+def nodes(people, budget):
+    fringe=[[person] for (person, (skill, cost)) in sorted(people.items(), reverse=True, key=lambda x: x[1][0]/x[1][1])]
+    skill_o = 0
+    cost_o = 0
+    while len(fringe)>0:
+        person=fringe.pop()
 
+        cost = 0
+        skill = 0
+        for i in person:
+
+            cost = cost + (people.get(i)[1])
+            skill = skill + (people.get(i)[0])
+        if skill>skill_o:
+            o=person
+            skill_o=skill
+            cost_o=cost
+
+
+        for suc in succ(people,person,budget):
+
+            fringe.append(suc)
+    return(o,cost_o,skill_o)
+
+
+
+
+
+
+
+# def approx_solve(people, budget):
+#     solution=()
+#     for (person, (skill, cost)) in sorted(people.items(), reverse=True, key=lambda x: x[1][0]/x[1][1]):
+#         if budget - cost > 0:
+#             solution += ( ( person, 1), )
+#             budget -= cost
+#             nodes(people,budget)
+#     return solution
+#
+
+
+if __name__== "__main__":
     if(len(sys.argv) != 3):
         raise Exception('Error: expected 2 command line arguments')
 
     budget = float(sys.argv[2])
     people = load_people(sys.argv[1])
-    solution = approx_solve(people, budget)
-
+    people,cost,skill=nodes(people, budget)
+    # solution = approx_solve(people, budget)
+    print(people,cost,skill)
     print("Found a group with %d people costing %f with total skill %f" % \
-               ( len(solution), sum(people[p][1]*f for p,f in solution), sum(people[p][0]*f for p,f in solution)))
-
-    for s in solution:
-        print("%s %f" % s)
+               ( len(people), cost, skill))
+    d=float(1)
+    for s in people:
+        print("%s %f" % (s,d))
 
