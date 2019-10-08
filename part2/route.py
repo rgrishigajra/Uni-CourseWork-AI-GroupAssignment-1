@@ -4,23 +4,20 @@
 import sys
 # test cases
 
-def successors(city,miles, gas, hours,segments,hway,d):
+def successors(city,miles, gas, hours,hway, d):
   c_city=city[-1]
-  #print(c_city,city)
   s=[]
   succ=[]
   count = 0
   h=[]
-
+  vel=0
   for i in d[c_city].keys():
     s=city+[i,]
-    hway += ","
-    hway += d[c_city][i]['hway']
-    miles += int(d[c_city][i]['miles'])
-    hours += (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))
-    h=[s,(miles + int(d[c_city][i]['miles'])),hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])),(hway + d[c_city][i]['hway'])]
+    vel=((miles + int(d[c_city][i]['miles']))/(hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))))
+    mvg=400*(vel/150)*((1-vel/150)**4)
+    h=[s,(miles + int(d[c_city][i]['miles'])),hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])), (hway +", " +d[c_city][i]['hway']),mvg]
     succ = succ +[h,]
-    #print(succ)
+  print(succ)
 
 
   #print([succ,hway,miles,hours])
@@ -32,26 +29,33 @@ def successors(city,miles, gas, hours,segments,hway,d):
 def solve(start_city, end_city, cost_function,d ):
   oye="oye"
   miles=0
+  mvg=0
   visited=[]
-  hours=0
+  hours=0.00
   gas=0
   segments=0
+  index=0
   hway=""
   city=[start_city, ]
-  fringe=[(city, miles, hours, gas, segments, hway)]
+  fringe=[(city, miles, hours, gas, segments, hway, mvg)]
   visited.append(start_city)
   while len(fringe)>0:
-    (city,miles, hours, gas, segments, hway) = fringe.pop(0)
-    #succ=successors(city, miles, hours, segments, hway, d)
-    #[succ1,miles,hours,segments,hway]=successors(city, miles, hours, segments, hway, d)
-    #print(succ1)
-    for succ in successors(city, miles, hours, gas, segments, hway, d):
+    if(sys.argv[3]=="segments"):
+      index=0
+    if(sys.argv[3]=="distance"):
+      index=fringe.index(min(fringe, key=lambda x: x[1]))
+    if(sys.argv[3]=="time"):
+      index=fringe.index(min(fringe, key=lambda x: x[2]))
+    if(sys.argv[3]=="mpg"):
+      index=fringe.index(min(fringe, key=lambda x: x[2]))
+    (city,miles, hours, gas, segments, hway, mvg) = fringe.pop(index)
+    for succ in successors(city, miles, hours, gas, hway, d):
       if succ[0][-1] == end_city:
-        print(succ[0],succ[1],succ[2],gas,segments+1,succ[3])
+        print(succ[0],succ[1],succ[2],gas,segments+1,succ[3],succ[4])
         print('done')
         return ''
       if succ[0][-1] not in visited:
-        fringe.append([succ[0],succ[1],succ[2],gas,segments+1,succ[3]])
+        fringe.append([succ[0],succ[1],succ[2],gas,segments+1,succ[3],succ[4]])
         visited.append(succ[0][-1])
 
   return ''
