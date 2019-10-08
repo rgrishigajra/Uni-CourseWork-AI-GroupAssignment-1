@@ -4,7 +4,7 @@
 import sys
 # test cases
 
-def successors(city,miles, gas, hours,hway, d):
+def successors(city,miles, hours, gas,hway, d):
   c_city=city[-1]
   s=[]
   succ=[]
@@ -13,11 +13,13 @@ def successors(city,miles, gas, hours,hway, d):
   vel=0
   for i in d[c_city].keys():
     s=city+[i,]
+    #print("miles,speed,time")
+    #print((float(d[c_city][i]['miles']), float(d[c_city][i]['speed'])),(float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])))
     vel=((miles + int(d[c_city][i]['miles']))/(hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))))
     mvg=400*(vel/150)*((1-vel/150)**4)
-    h=[s,(miles + int(d[c_city][i]['miles'])),hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])), (hway +", " +d[c_city][i]['hway']),mvg]
+    h=[s,(miles + int(d[c_city][i]['miles'])),hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])), (hway +", " +d[c_city][i]['hway']),mvg,((miles + int(d[c_city][i]['miles']))/mvg)]
     succ = succ +[h,]
-  print(succ)
+  #print(succ)
 
 
   #print([succ,hway,miles,hours])
@@ -36,6 +38,7 @@ def solve(start_city, end_city, cost_function,d ):
   segments=0
   index=0
   hway=""
+  path=""
   city=[start_city, ]
   fringe=[(city, miles, hours, gas, segments, hway, mvg)]
   visited.append(start_city)
@@ -51,13 +54,16 @@ def solve(start_city, end_city, cost_function,d ):
     (city,miles, hours, gas, segments, hway, mvg) = fringe.pop(index)
     for succ in successors(city, miles, hours, gas, hway, d):
       if succ[0][-1] == end_city:
-        print(succ[0],succ[1],succ[2],gas,segments+1,succ[3],succ[4])
-        print('done')
+        for i in succ[0]:
+          path+=i
+          path+=" "
+        print(segments+1,succ[1],succ[2],succ[5],path)
         return ''
       if succ[0][-1] not in visited:
-        fringe.append([succ[0],succ[1],succ[2],gas,segments+1,succ[3],succ[4]])
+        fringe.append([succ[0],succ[1],succ[2],succ[5],segments+1,succ[3],succ[4]])
         visited.append(succ[0][-1])
 
+  print()
   return ''
 
 
