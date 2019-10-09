@@ -2,7 +2,7 @@
 #
 # choose_team.py : Choose a team of maximum skill under a fixed budget
 #
-# Code by: [PLEASE PUT YOUR NAMES AND USER IDS HERE]
+# Code by: michheta rgajra jaymadhu :Milan Chheta, Rishabh Gajra, Jay Madhu
 #
 # Based on skeleton code by D. Crandall, September 2019
 #
