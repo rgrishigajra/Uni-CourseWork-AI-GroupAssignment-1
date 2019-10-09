@@ -157,22 +157,24 @@ if __name__ == "__main__":
     print("Start state: \n" +"\n".join(printable_board(tuple(start_state))))
     print("Solving...")
 
-    if(sys.argv[2]=="Original"):
+    if(sys.argv[2]=="Original" or sys.argv[2] == "original"):
         route=solve_original(start_state)
         if (route):
             print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
         else:
             print('Inf')
-    elif (sys.argv[2] == "Luddy"):
+    elif (sys.argv[2] == "Luddy" or sys.argv[2] == "luddy"):
         route = solve_luddy(start_state)
         if (route):
             print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
         else:
             print('Inf')
-    elif (sys.argv[2] == "Circular"):
+    elif (sys.argv[2] == "Circular" or sys.argv[2] == "circular"):
         route = solve_circular(start_state)
         if (route):
             print("Solution found in " + str(len(route)) + " moves:" + "\n" + route)
         else:
             print('Inf')
+    else:
+        print('Select correct Board')
 
