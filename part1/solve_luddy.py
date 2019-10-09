@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 # solve_luddy.py : Sliding tile puzzle solver
 #
-# Code by: [PLEASE PUT YOUR NAMES AND USER IDS HERE]
+# Code by: Milan Chheta, Rishabh Gajra, Jay Madhu
 #
 # Based on skeleton code by D. Crandall, September 2019
 #
