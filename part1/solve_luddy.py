@@ -60,12 +60,26 @@ def heuristic_o(state):
         (x1,y1)=ind2rowcol(state.index(i+1))
         (x2,y2)=ind2rowcol(i)
         c+= abs(x1-x2)+abs(y2-y1)
-        """if state[i]!=i+1 and state[i]!=0 :
-            c=c+1"""
     return c
 
 
 def heuristic_c(state):
+    c = 0
+    for i in range(0, 15):
+            (x1, y1) = ind2rowcol(i)
+            (x2, y2) = ind2rowcol(state.index(i+1))
+            if(x1==x2):
+               c2= abs(x1 - x2-4)
+            elif(y1==y2):
+                c2=abs(y1 - y2-4)
+            else:
+                c2 =abs(x1 - x2-4)+ abs(y1 - y2 - 4)
+            c1=abs(x1 - x2) + abs(y2 - y1)
+            c=min(c1,c2)
+    return c
+
+
+def heuristic_l(state):
     c=0
     for i in range(0,len(state)):
         if state[i]!=i+1 and state[i]!=0 :
@@ -75,7 +89,7 @@ def heuristic_c(state):
 
 def solve_l(initial_board):
     count = 0
-    h_a = heuristic_c(initial_board)
+    h_a = heuristic_l(initial_board)
     fringe = [(initial_board, "")]
     visited = []
     hlist=[h_a]
@@ -90,13 +104,35 @@ def solve_l(initial_board):
             return (route_so_far)
         count = count + 1
         for (succ, move) in successors(state):
-            h_a = heuristic_c(succ)
+            h_a = heuristic_l(succ)
             fringe.insert(0, (succ, route_so_far + move))
             hlist.insert(0,h_a+len(route_so_far)+1)
     return False
 
 # The solver! - using BFS right nowol,m
 def solve(initial_board):
+    count=0
+    h_a=heuristic_o(initial_board)
+    fringe = [ (initial_board, "" ) ]
+    visited=[]
+    hlist=[h_a]
+    while len(fringe) > 0:
+        (state, route_so_far)= fringe.pop(hlist.index(min(hlist)))
+        hlist.pop(hlist.index(min(hlist)))
+        if state in visited:
+            continue
+        visited.append(state)
+        if is_goal(state):
+            print(count)
+            return (route_so_far)
+        count = count + 1
+        for (succ, move) in successors( state ):
+            h_a = heuristic_o(succ)
+            fringe.insert(0, (succ, route_so_far + move ))
+            hlist.insert(0,h_a+len(route_so_far)+1)
+    return False
+
+def solve_c(initial_board):
     count=0
     h_a=heuristic_o(initial_board)
     fringe = [ (initial_board, "" ) ]
@@ -135,12 +171,10 @@ def solve_original(start_state):
     return route
 
 def solve_circular(start_state):
-
     route = solve_l(tuple(start_state))
     return route
 
 def solve_luddy(start_state):
-
     route = solve_l(tuple(start_state))
     return route
 
