@@ -22,7 +22,6 @@ def load_people(filename):
 #  by adding a fraction of the last person.
 #
 def succ(people,person,budget):
-    # print('name:',name)
     cost=0
     r = person
     s=[]
@@ -42,11 +41,11 @@ def nodes(people, budget):
     fringe=[[person] for (person, (skill, cost)) in sorted(people.items(), reverse=True, key=lambda x: x[1][0]/x[1][1])]
     skill_o = 0
     cost_o = 0
+    visited=[]
     while len(fringe)>0:
         person=fringe.pop()
         cost = 0
         skill = 0
-        #print(person,skill_o)
         for i in person:
                 cost = cost + (people.get(i)[1])
                 skill = skill + (people.get(i)[0])
@@ -55,8 +54,10 @@ def nodes(people, budget):
                 skill_o=skill
                 cost_o=cost
         for suc in succ(people,person,budget):
+            if sorted(suc) in visited:
+                continue
+            visited.append(sorted(suc))
             fringe.append(suc)
-
     return(o,skill_o,cost_o)
 
 
@@ -70,7 +71,7 @@ if __name__== "__main__":
     # solution = approx_solve(people, budget)
     print("Found a group with %d people costing %f with total skill %f" % \
                ( len(people), cost, skill))
-    d=float(1)
+    d=float(1) #Because the whole unit of robot is considered and not any fraction
     for s in people:
         print("%s %f" % (s,d))
 
