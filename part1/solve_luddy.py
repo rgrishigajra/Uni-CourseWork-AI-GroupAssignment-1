@@ -10,7 +10,7 @@ import sys
 
 MOVES = { "R": (0, -1), "L": (0, 1), "D": (-1, 0), "U": (1,0) }
 MOVES_luddy = { "A": (2, 1),"B": (2, -1),"C": (-2, 1),"D": (-2, -1),"E": (1, 2),"G": (-1, 2),"F": (1, -2),"H": (-1, -2)}
-
+LUDDY={}
 
 def rowcol2ind(row, col):
     if(row==-1):
@@ -68,14 +68,9 @@ def heuristic_c(state):
     for i in range(0, 15):
             (x1, y1) = ind2rowcol(i)
             (x2, y2) = ind2rowcol(state.index(i+1))
-            if(x1==x2):
-               c2= abs(x1 - x2-4)
-            elif(y1==y2):
-                c2=abs(y1 - y2-4)
-            else:
-                c2 =abs(x1 - x2-4)+ abs(y1 - y2 - 4)
+            c2 =abs(x1 - x2-4)+ abs(y1 - y2 - 4)
             c1=abs(x1 - x2) + abs(y2 - y1)
-            c=min(c1,c2)
+            c+=min(c1,c2)
     return c
 
 
@@ -88,7 +83,6 @@ def heuristic_l(state):
 
 
 def solve_l(initial_board):
-    count = 0
     h_a = heuristic_l(initial_board)
     fringe = [(initial_board, "")]
     visited = []
@@ -100,9 +94,7 @@ def solve_l(initial_board):
             continue
         visited.append(state)
         if is_goal(state):
-            print(count)
             return (route_so_far)
-        count = count + 1
         for (succ, move) in successors(state):
             h_a = heuristic_l(succ)
             fringe.insert(0, (succ, route_so_far + move))
@@ -111,7 +103,6 @@ def solve_l(initial_board):
 
 # The solver! - using BFS right nowol,m
 def solve(initial_board):
-    count=0
     h_a=heuristic_o(initial_board)
     fringe = [ (initial_board, "" ) ]
     visited=[]
@@ -123,9 +114,7 @@ def solve(initial_board):
             continue
         visited.append(state)
         if is_goal(state):
-            print(count)
             return (route_so_far)
-        count = count + 1
         for (succ, move) in successors( state ):
             h_a = heuristic_o(succ)
             fringe.insert(0, (succ, route_so_far + move ))
@@ -133,8 +122,7 @@ def solve(initial_board):
     return False
 
 def solve_c(initial_board):
-    count=0
-    h_a=heuristic_o(initial_board)
+    h_a=heuristic_c(initial_board)
     fringe = [ (initial_board, "" ) ]
     visited=[]
     hlist=[h_a]
@@ -145,11 +133,9 @@ def solve_c(initial_board):
             continue
         visited.append(state)
         if is_goal(state):
-            print(count)
             return (route_so_far)
-        count = count + 1
         for (succ, move) in successors( state ):
-            h_a = heuristic_o(succ)
+            h_a = heuristic_c(succ)
             fringe.insert(0, (succ, route_so_far + move ))
             hlist.insert(0,h_a+len(route_so_far)+1)
     return False
@@ -171,7 +157,8 @@ def solve_original(start_state):
     return route
 
 def solve_circular(start_state):
-    route = solve_l(tuple(start_state))
+    route = ""
+    route = solve_c(tuple(start_state))
     return route
 
 def solve_luddy(start_state):
