@@ -34,7 +34,6 @@ def succ(people,person,budget):
         if (b-cost_next>0) and person_next not in person:
             b=b-cost_next
             s+=[r+ [person_next,],]
-    print(s)
     return s
 
 
@@ -47,7 +46,7 @@ def nodes(people, budget):
         person=fringe.pop()
         cost = 0
         skill = 0
-        print(person,skill_o)
+        #print(person,skill_o)
         for i in person:
                 cost = cost + (people.get(i)[1])
                 skill = skill + (people.get(i)[0])
