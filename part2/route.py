@@ -5,17 +5,20 @@
 import sys
 # test cases
 
-def successors(city,miles, hours, gas, hway, d):
+def successors(city,miles, hours, gas, hway, mpg, d):
   c_city=city[-1]
   s=[]
   succ=[]
   vel=0
   for i in d[c_city].keys():
     s=city+[i,]
-    vel=((miles + int(d[c_city][i]['miles']))/(hours+ (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))))
-    mpg=400*(vel/150)*((1-(vel/150))**4)
+    vel=((miles + float(d[c_city][i]['miles']))/(hours+ (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))))
+    new_mpg=mpg+float(d[c_city][i]['mpg'])
+    new_miles = (miles + float(d[c_city][i]['miles']))
+    new_gas = gas+(float(d[c_city][i]['miles'])/float(d[c_city][i]['mpg']))
+    new_hours=hours++ (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))
     #the structure of return is cities travelled[0], total miles[1], total hours[2], list of high ways[3], hway path[4], mpg[5] and gas gallons[6]
-    h=[s,(miles + int(d[c_city][i]['miles'])),hours + (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed'])), (hway +" " +d[c_city][i]['hway']),mpg,((miles + float(d[c_city][i]['miles']))/mpg)]
+    h=[s,new_miles,new_hours, (hway +" " +d[c_city][i]['hway']),new_mpg,new_gas]
     succ = succ +[h,]
   #print(succ)
 
@@ -50,7 +53,7 @@ def solve(start_city, end_city, cost_function,d ):
     if(sys.argv[3]=="mpg"):
       index=fringe.index(min(fringe, key=lambda x: x[6]))
     (city,miles, hours, gas, segments, hway, mpg) = fringe.pop(index)
-    for succ in successors(city, miles, hours, gas, hway, d):
+    for succ in successors(city, miles, hours, gas, hway, mpg, d):
       if succ[0][-1] == end_city:
         #print(d[succ[0][-2]][end_city]['hway']) d[current successor][end city][highway for it]
         hway+=" "
@@ -87,13 +90,13 @@ if __name__ == "__main__":
     for line in f:
       (city1,city2, miles, speed, hway) = line.split()
       if city1 in d.keys():
-        d[city1][city2]={'miles':miles,'speed': speed,'hway': hway}
+        d[city1][city2]={'miles':miles,'speed': speed,'hway': hway, "mpg": 400*(float(speed)/150)*((1-(float(speed)/150))**4)}
       else :
-        d[city1]={city2:{'miles':miles, 'speed':speed, 'hway':hway}}
+        d[city1]={city2:{'miles':miles, 'speed':speed, 'hway':hway, "mpg": 400*(float(speed)/150)*((1-(float(speed)/150))**4)}}
       if city2 in d.keys():
-        d[city2][city1]={'miles':miles,'speed': speed,'hway': hway}
+        d[city2][city1]={'miles':miles,'speed': speed,'hway': hway, "mpg": 400*(float(speed)/150)*((1-(float(speed)/150))**4)}
       else :
-        d[city2]={city1:{'miles':miles, 'speed':speed, 'hway':hway}}
+        d[city2]={city1:{'miles':miles, 'speed':speed, 'hway':hway, "mpg": 400*(float(speed)/150)*((1-(float(speed)/150))**4)}}
 
   solve(start_city, end_city,cost_function,d)
 
