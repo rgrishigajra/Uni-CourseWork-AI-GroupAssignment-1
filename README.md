@@ -16,8 +16,19 @@ There are three variants of this problem which are discussed below:
 **•	Circular:** This is another variant of 15-puzzle wherein the swap can be possible from one side of the board to the opposite side of the board. Again, we had to make decision for which heuristic to be used: misplaced tiles or Manhattan. We finally decided upon Manahattan heuristic function that was modified a little for the Circular Moves. The Manhattan distance was modoified in such a way that the circular distance as well and the normal Manhattan distance is calculated, and the minimum distance of the two is considered. All the circular moves and its condition were added. Design implementation is same as the above problem. The only major difference is the heuristic. States with smaller heuristic values are considered first over other states, i.e., they are popped from the fringe first.  
 **•	Luddy:** This is the third and the final variant of the 15-puzzle problem where the swapping of the tiles is like the move made by the knight in the chess game. This was the most difficult one to solve for us as we couldn’t decide upon a good heuristic for this one. The design implementation is similar to the above two problems. However, heuristic was the major challenge. Manhattan distance was not an admissible heuristic, so it was out of option, therefore tried to solve the problem with the misplaced titles. While it is an admissible heuristic it takes time to solve the puzzle. Since weren’t able to come up with a good solution we finally decided to implement with the misplaced tiles. A heuritic function was thought where the movement from one position to its actual value could be hardcoded into a python dictionary and this dictionary could have been used as a lookup up table while calculating the required number of moves.  
 
+## Problem 1: Road trip!  
+**The initial State:** Start city with a cost function that we ave to optimize while we reach till the end city  
+**The goal State:** Reaching the end city with the optimum value of cost function.   
+**Set of valid states:** Set all the possible cities that can be visited.  
+**The Successor function:** Will return all the cities that can be visited from the current city. 
+**The cost function:** Distance between two cities. (edge weight)
 
-## Problem 3: Choosing a team!  
+•	We first create a dictionary of the given file where key is the main city and the second key would be the list of connected cities from the main city. In this we create an inner dictionary in which we store highway name, miles, and max speed. We've also calculated an mpg (miles per gallon) value based on given formula.  
+•	What we've implemented is basically a priority queue. Based on the requirement we created a fringe data structure containing all the basic parameters. While the successor function generates all the valid successors of a node the fringe data structure updates all the corresponding parametres like total miles, gas, mpg, hours, etc. till path followed so far.  
+•	Once the successors are added to the fringe we use the cost function and pop out the minimum value of either number of segments until now or total number of hours. For mpg cost function we pop the minimum value of gas gallons used until now in the list.  
+•	If the end city is found we print the path, miles, mpg as required in the ouput and also print human readable instructions. Also, We thought of adding a heuristic function based on the longitudes and latitudes of coordinates but it would have been useful only for the case of miles cost function and moreover, we weren't sure that whether the heuristic would be admissible and consistent or not so decided against implementing it. The output was generated really fast so we didn't feel the need to use the heuristic function. 
+
+## Problem 3: Choosing a team  
 **The Initial State:** A list of robots with their corresponding skill and cost with a given budget.  
 **The Goal State:** A team of robots with maximum possible skills formed using the given budget.  
 **Set of Valid States:** A team consisting of whole robots, having maximum skill and cost less than budget.  
