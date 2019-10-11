@@ -66,7 +66,7 @@ def solve(start_city, end_city, cost_function,d ):
         for i in range(0,(len(succ[0])-1)):
           print("Go from " +str(succ[0][i]).replace('_', ' ') + " to " +str(succ[0][i+1]).replace('_', ' ')+ " using Highway " + path[i].replace('_', ' '))
         print("\nPlease maintain an avg speed of " +str(round(succ[1]/succ[2],2))+ ", it should take you around "+ str(round(succ[2],2))+ " hours on this trip.\nHave a safe journey!")
-        print(segments+1, succ[1], succ[2], succ[5], cities) #[total-segments] [total-miles] [total-hours] [total-gas-gallons] [start-city] [city-1] [city-2] ... [end-city]
+        print(segments+1, int(succ[1]), round(succ[2],4), round(succ[5],4), cities) #[total-segments] [total-miles] [total-hours] [total-gas-gallons] [start-city] [city-1] [city-2] ... [end-city]
         return ''
       if succ[0][-1] not in visited:
         fringe.append([succ[0], succ[1], succ[2], succ[5], segments+1, succ[3], succ[4]]) #(city,miles, hours, gas, segments, hway, mpg)
