@@ -16,7 +16,7 @@ def successors(city,miles, hours, gas, hway, mpg, d):
     new_mpg=mpg+float(d[c_city][i]['mpg'])
     new_miles = (miles + float(d[c_city][i]['miles']))
     new_gas = gas+(float(d[c_city][i]['miles'])/float(d[c_city][i]['mpg']))
-    new_hours=hours++ (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))
+    new_hours=hours+ (float(d[c_city][i]['miles']) / float(d[c_city][i]['speed']))
     #the structure of return is cities travelled[0], total miles[1], total hours[2], list of high ways[3], hway path[4], mpg[5] and gas gallons[6]
     h=[s,new_miles,new_hours, (hway +" " +d[c_city][i]['hway']),new_mpg,new_gas]
     succ = succ +[h,]
